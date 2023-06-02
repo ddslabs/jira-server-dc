@@ -1,1 +1,1 @@
-MySQL (RDS) queries for Jira/JQM database
+MySQL (RDS) queries for Jira/JSM database

@@ -3,7 +3,6 @@
 * Created by Dmitrij P @ May 2023
 */
 // Main objects
-import com.atlassian.jira.util.SimpleErrorCollection
 import com.atlassian.jira.issue.MutableIssue
 import com.atlassian.jira.bc.issue.search.SearchService
 import com.atlassian.jira.component.ComponentAccessor
