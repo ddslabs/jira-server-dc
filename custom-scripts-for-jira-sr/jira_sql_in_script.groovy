@@ -1,6 +1,6 @@
 /*
 * SQL query results treatment in Jira/JSM
-* (MySQL/RDS type query)
+* ( MySQL/RDS type query )
 * Created by Dmitrij P @ May 2023
 */
 // Main objects
