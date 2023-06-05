@@ -21,20 +21,27 @@ log.debug("SQL query results - Begin")
 def delegator = (DelegatorInterface)ComponentAccessor.getComponent(DelegatorInterface)
 String helperName = delegator.getGroupHelperName( "default")
 
-//Enclose the SQL statement in triple quotes so it can span multiple lines for better visibility
+// Enclose the SQL statement in triple quotes so it can span multiple lines for better visibility
 def sqlStmt = """
 
+with max_maj as (
+    select 
+        ae.PRIMARY_RESOURCE_ID as pid,
+        max(ae.ENTITY_TIMESTAMP) as maxts
+    from AO_C77861_AUDIT_ENTITY ae
+    where ae.CATEGORY = "projects"
+    group by ae.PRIMARY_RESOURCE_ID 
+)
 select 
-	p.pkey ,
-	p.pname ,
-	FROM_UNIXTIME(MAX(ae.ENTITY_TIMESTAMP)/1000) as datetime_value,
-  	CAST(FROM_UNIXTIME(MAX(ae.ENTITY_TIMESTAMP)/1000) as date) as date_value 
+    p.pkey ,
+    p.pname ,
+    FROM_UNIXTIME(MAX(mm.maxts)/1000) as valeur_datetime,
+    CAST(FROM_UNIXTIME(MAX(mm.maxts)/1000) as date) as valeur_date 
 from project p 
-left join AO_C77861_AUDIT_ENTITY ae on 
-	ae.PRIMARY_RESOURCE_ID = p.ID 
-	and ae.CATEGORY = "projects"
+join max_maj mm on 
+    mm.pid = p.ID 
 group by p.pkey
-order by ae.ENTITY_TIMESTAMP, p.pkey asc
+order by mm.maxts desc
 
 """
 
