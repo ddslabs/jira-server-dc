@@ -1,6 +1,6 @@
 /*
 * Workflows Schemes management: unused Workflows delete from Jira/JSM instance
-* (with SQL query - MySQL/RDS type ) - in progress
+* (with SQL query - MySQL/RDS type ) - IN PROGRESS
 * Created by Dmitrij P @ May 2023
 */
 // Main object
@@ -20,7 +20,6 @@ import java.sql.Connection
 import org.apache.log4j.Level
 import org.apache.log4j.Logger
 
-
 def log = Logger.getLogger("Workflow (Schemes) management")
 log.setLevel(Level.DEBUG)
 log.debug("Unused Workflow Schemes - Begin")
@@ -34,13 +33,13 @@ WorkflowSchemeManager workflowSchemeManager = ComponentAccessor.getWorkflowSchem
 
 // List of all WFs of instance Jira/JSM - optional
 //def allWFs = workflowManager.getWorkflows()
-
+//log.debug("WF (Schemes) management : SQL way")
 // SQL query way
 
 // "assistance" pour la connexion à la base de données
 def delegator = (DelegatorInterface)ComponentAccessor.getComponent(DelegatorInterface)
 String helperName = delegator.getGroupHelperName("default")
-
+/*
 // Non-used WFs
 def sqlStmt = """
 select distinct	
@@ -87,9 +86,8 @@ finally {
 
 // variable for unused Workflows
 List<JiraWorkflow> notusedWFlist = []
-/* for each not used Workflow Scheme
+// for each not used Workflow Scheme
 
-*/
 for  (wfs in notUsedWFS) {
     Map wf_list = wfs.getMappings()
     log.debug("worflows list $wf_list and variable type " + wf_list.getClass())
@@ -102,12 +100,30 @@ for  (wfs in notUsedWFS) {
     }
     //log.debug("wf_list_keys: " * wf_list_keys.toList())
 }
-
+*/
 
 // TO DO: get WF Scheme by Name/ID (hope so) - to test
 //def notActiveWFS = workflowSchemeManager.getWorkflowSchemeObj()
-
+log.debug("WF (Schemes) management : API way")
 // Jira API objects way
+def apiActiveWFSs = workflowSchemeManager.getActiveWorkflowNames()
+//log.debug("Active workflow schemes " + apiActiveWFSs.toPrettyString())
+def apiAllWFSs = workflowSchemeManager.getSchemes()
+//log.debug("All active workflow schemes " + apiAllWFSs.toPrettyString())
+def apiActiveWFs = workflowManager.getActiveWorkflows() // Collection of JiraWorkflow objects
+log.debug("Active workflows size <" + apiActiveWFs.size() + "> and values: " + apiActiveWFs.toString())
+def apiAllWFs = workflowManager.getWorkflows() // Collection of JiraWorkflow objects
+log.debug("All workflows size <" + apiAllWFs.size() + "> and values: " + apiAllWFs.toString())
+
+List notUsedWFSs = []
+
+for (wfss in apiAllWFSs) { // not working, for the moment; TO DO
+    if (apiActiveWFSs.contains(wfss)) {
+        notUsedWFSs.addAll(wfss)
+        log.debug("wfss object <" + wfss.getString("name") + "> was added to notUsedWFWs variable")
+    }
+}
+log.debug("notUsedWFSs size <" + notUsedWFSs.size() + "> and values: " + notUsedWFSs.toPrettyString())
 
 
 log.debug("Unused Workflow Schemes - End")
