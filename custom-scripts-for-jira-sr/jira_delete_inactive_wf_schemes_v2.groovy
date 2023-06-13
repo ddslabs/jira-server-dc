@@ -1,68 +1,85 @@
+/*
+* Unused/Inactive Jira/JSM Workflows (Schemes) Clean-up
+* fork of https://community.atlassian.com/t5/Jira-Core-Server-articles/Cleaning-up-Inactive-Workflow-Schemes-and-Workflows/ba-p/2029884
+* Created by Dmitrij P @ June 2023
+*/
 // Main objects
-import com.onresolve.scriptrunner.exception.GenericException
 import com.atlassian.jira.component.ComponentAccessor
-import com.atlassian.jira.workflow.JiraWorkflow // optional Interface
-import com.atlassian.jira.workflow.ConfigurableJiraWorkflow // optional Class
-import com.atlassian.jira.workflow.WorkflowScheme
 import com.atlassian.jira.bc.workflow.WorkflowSchemeService
+import com.atlassian.jira.workflow.WorkflowSchemeManager
+import com.atlassian.jira.workflow.WorkflowManager
+import com.atlassian.jira.workflow.WorkflowScheme
+import com.atlassian.jira.workflow.WorkflowException
+// Groovy Field class for internal methods/functions
+import groovy.transform.Field
 // Logging
 import org.apache.log4j.Level
 import org.apache.log4j.Logger
 
 def log = Logger.getLogger("Workflow (Schemes) management")
 log.setLevel(Level.DEBUG)
-log.debug("Unused Workflow Schemes - Begin")
 
-//Utilisateur connecté - utilisé pour les validations et suppressions d'objets jira
-def user = ComponentAccessor.getJiraAuthenticationContext().getLoggedInUser()
+log.debug("Unused/Inactive Workflow (Schemes) Clean-up - Begin")
 
 // Object managers
-def workflowSchemeManager = ComponentAccessor.getWorkflowSchemeManager()
-def workflowManager = ComponentAccessor.getWorkflowManager()
-def workflowSchemeService = ComponentAccessor.getComponent(WorkflowSchemeService)
-// optional
-def confWorkflow = ComponentAccessor.getComponent(ConfigurableJiraWorkflow) // single object operations Class
-def jiraWorkflow = ComponentAccessor.getComponent(JiraWorkflow) // single object operations Interface
+@Field WorkflowSchemeManager workflowSchemeManager = ComponentAccessor.getWorkflowSchemeManager()
+@Field WorkflowManager workflowManager = ComponentAccessor.getWorkflowManager()
+@Field WorkflowSchemeService workflowSchemeService = ComponentAccessor.getComponent(WorkflowSchemeService)
 
-// workflows anc workflow schemes
-def wfSchemeObjs = workflowSchemeManager.getSchemeObjects() // All Workflow Scheme objects
-//log.debug("wfSchemeObjs size " + wfSchemeObjs.size() + " - " + wfSchemeObjs)
-def wfSchemes = workflowSchemeManager.getSchemes() // All Workflow Schemes with "[name/description/id]" values 
-//log.debug("wfSchemes size " + wfSchemes.size() + " - " + wfSchemes)
-def wfActive = workflowSchemeManager.getActiveWorkflowNames() // List of active WF names
-//log.debug("wfSchemesActive size " + wfActive.size() + " - " + wfActive)
-def wfAll = workflowManager.getWorkflows()// Default JiraWorkflow objects Collection
-log.debug("wfAll size " + wfAll.size() + " - " + wfAll)
-def wfAllActive = workflowManager.getActiveWorkflows() // Configurable JiraWorkflow objects Collection
-log.debug("wfAllActive size " + wfAllActive.size() + " - " + wfAllActive)
-def inactiveWorkflows = wfAll.findAll{!(it in wfAllActive)}
-log.debug("inactiveWorkflows size " + inactiveWorkflows.size() + " - $inactiveWorkflows") 
-Collection<WorkflowScheme> inactiveWorkflowSchemes = workflowSchemeManager.getAssignableSchemes()
-    .findAll{! workflowSchemeService.isActive((WorkflowScheme) it)}
-log.debug("inactiveWorkflowSchemes size " + inactiveWorkflowSchemes.size() + " - " + inactiveWorkflowSchemes)
-
-/*
-for (wfscheme in wfSchemeObjs) {
-    log.debug("wfscheme = $wfscheme")
-    def wfs = wfscheme.getEntities()
-    for (wf in wfs) {
-        log.debug("wf class " + wf.getClass())
-        //JiraWorkflow wfent = workflowManager.get
-        //def wfobj = workflowManager.getAt(wf.getEntityTypeId())
-        //def wfobj = workflowManager.getAt(wf.getEntityTypeId())
-        //log.debug("wfobj = $wfobj")
-        def isactive = wfActive.contains(wf)
-        log.debug("isactive = $isactive")
-        
+// Delete all inactive Workflow Schemes
+def deleteInactiveWorkflowSchemes() {
+    def log = Logger.getLogger("deleteInactiveWorkflowSchemes()")
+    log.setLevel(Level.DEBUG)
+    // Connected user
+    def user = ComponentAccessor.getJiraAuthenticationContext().getLoggedInUser()
+    // inactiveWorkflowSchemes
+    Collection<WorkflowScheme> inactiveWorkflowSchemes = workflowSchemeManager.getAssignableSchemes()
+        .findAll{!workflowSchemeService.isActive((WorkflowScheme) it)} // class java.util.ArrayList 
+    log.debug("deleteInactiveWorkflowSchemes() - Begin")
+    try {
+        log.debug("${inactiveWorkflowSchemes.size()} inactive workflow schemes will be deleted")
+        for (iws in inactiveWorkflowSchemes) {
+            workflowSchemeService.validateUpdateWorkflowScheme(user,iws)
+            log.debug("Delete is possible of <${iws.getName()}>") 
+            //workflowSchemeService.deleteWorkflowScheme(user, iws) //comment to skip WF Scheme delete action
+            log.debug("${iws.getName()} was deleted")        
+        }
+    } catch (WorkflowException we) {
+        log.error("WorkflowException Error message: " + we.getMessage())
     }
+    log.debug("deleteInactiveWorkflowSchemes() - End")
 }
 
-// try - catch
-try {
-    log.debug("TRY - CATCH")
-} catch (GenericException ex) {
-    log.debug("Error message: " + ex.getMessage())
+// Delete all inactive Workflows
+def deleteInactiveWorkflows() {
+    def log = Logger.getLogger("deleteInactiveWorkflows()")
+    log.setLevel(Level.DEBUG)
+    log.debug("deleteInactiveWorkflows() - Begin")
+    // inactiveWorkflows
+    def allWorkflows = workflowManager.getWorkflows()// Default(System)/Configurable JiraWorkflow objects Collection ; class java.util.ArrayList
+    def activeWorkflows = workflowManager.getActiveWorkflows() // Configurable JiraWorkflow objects Collection ; class java.util.HashSet
+    def inactiveWorkflows = allWorkflows.findAll{!(it in activeWorkflows)} // class java.util.ArrayList
+    try {
+        log.debug("${inactiveWorkflows.size()} inactive workflows may be deleted")
+        for (iw in inactiveWorkflows) {
+            //log.debug("is iw ${iw.getName()} - editable: ${iw.editable} & default: ${workflowManager.isSystemWorkflow(iw)}")
+            if(iw.editable) {
+                //log.debug("${iw.getDisplayName()} will be deleted")
+                //workflowManager.deleteWorkflow(iw) //comment to skip WF delete action
+                log.debug("${iw.getDisplayName()} was deleted")                
+            } else {log.warn("${iw.getDisplayName()} is default system workflow and may not be deleted")}
+        }
+    } catch (WorkflowException we) {
+        log.error("Unable to delete ${iw.getDisplayName()}")
+        log.error("Error message: " + we.getMessage())
+    }
+    log.debug("deleteInactiveWorkflows() - End")
 }
-*/
 
-log.debug("Unused Workflow Schemes - End")
+// ATTENTION: First delete the inactive schemes, then delete the inactive workflows
+// First action
+deleteInactiveWorkflowSchemes()
+// Second action
+deleteInactiveWorkflows()
+
+log.debug("Unused/Inactive Workflow (Schemes) Clean-up - End")
