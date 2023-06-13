@@ -45,20 +45,3 @@ empty_projects.forEach() { project ->
 }
 
 log.debug("Bulk empty projects delete - end")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
