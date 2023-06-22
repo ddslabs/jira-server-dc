@@ -18,10 +18,10 @@ def permissionSchemeManager = ComponentAccessor.getPermissionSchemeManager()
 def projectManager = ComponentAccessor.getProjectManager()
 
 // Permission scheme to Add
-def schm = permissionSchemeManager.getSchemeObject(10100)
+def schm = permissionSchemeManager.getSchemeObject(10100) // ID of permission scheme you want to use
 log.debug("Permission scheme object: " + schm)
 // Project to change the Permission scheme
-Project proj = projectManager.getProjectObjByKey("ZOIP")
+Project proj = projectManager.getProjectObjByKey("ZOIP") // use Project key
 log.debug(proj)
 
 // try-catch
