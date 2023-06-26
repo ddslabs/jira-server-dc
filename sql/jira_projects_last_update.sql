@@ -19,4 +19,5 @@ left join app_user au on au.user_key = p.LEAD
 left join cwd_user cu on cu.lower_user_name = au.lower_user_name 
 left join count_issues ci on ci.project = j.PROJECT 
 group by p.pkey 
+#having (max(j.UPDATED) < '2021-01-01' or max(j.UPDATED) is NULL)
 order by max(j.UPDATED) desc
