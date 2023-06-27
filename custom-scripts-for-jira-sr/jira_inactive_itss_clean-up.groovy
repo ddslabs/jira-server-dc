@@ -30,5 +30,20 @@ for (itss in allITSS) {
         }
     }
 }
+
+/* In progress - begin */
+def allFSS = fssManager.getFieldScreenSchemes()
+//log.debug(allFSS.toString())
+
+for (fss in allFSS) {
+    def fssi = fss.getFieldScreenSchemeItems()
+    def fssitr = fss.iterator()
+    log.debug("Items: ${fss.fieldScreenSchemeItems.findAll()}")
+    log.debug("FSS ID: ${fss.getId()} & Name: ${fss.getName()} & FieldScreenSchemeItems size: ${fssi.size()} ")
+    
+    
+}
+/* In progress - end */
+
 // inactive Screens & Screen Schemes are not treated by this scripts (for now)
 log.debug("Issue Type Screen Schemes Clean-up - End")
