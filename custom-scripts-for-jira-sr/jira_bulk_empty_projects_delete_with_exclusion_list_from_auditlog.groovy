@@ -2,7 +2,7 @@
 * Jira empty projects bulk delete with
 * SQL query exclusion list from AuditLog
 * ( MySQL/RDS type query )
-* Created by Dmitrij P @ May 2023
+* Created by Dmitrij P @ June 2023
 */
 // Main objects
 import com.atlassian.jira.component.ComponentAccessor
@@ -93,7 +93,7 @@ empty_projects.forEach() { project ->
             log.debug(ex.getMessage())
         } 
     } else { // project(s) that was/were not deleted
-        log.debug("<<< --- Projet vide ${project} n'a pas été supprimé. --- >>>")
+        log.debug("<<< --- Empty project ${project} was not deleted. --- >>>")
     }   
 }
 
