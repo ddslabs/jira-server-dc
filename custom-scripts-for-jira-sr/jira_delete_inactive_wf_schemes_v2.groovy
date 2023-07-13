@@ -36,16 +36,18 @@ def deleteInactiveWorkflowSchemes() {
     Collection<WorkflowScheme> inactiveWorkflowSchemes = workflowSchemeManager.getAssignableSchemes()
         .findAll{!workflowSchemeService.isActive((WorkflowScheme) it)} // class java.util.ArrayList 
     log.debug("deleteInactiveWorkflowSchemes() - Begin")
-    try {
-        log.debug("${inactiveWorkflowSchemes.size()} inactive workflow schemes will be deleted")
-        for (iws in inactiveWorkflowSchemes) {
+    
+    log.debug("${inactiveWorkflowSchemes.size()} inactive workflow schemes will be deleted")
+    for (iws in inactiveWorkflowSchemes) {
+        try {
             workflowSchemeService.validateUpdateWorkflowScheme(user,iws)
             log.debug("Delete is possible of <${iws.getName()}>") 
             //workflowSchemeService.deleteWorkflowScheme(user, iws) //comment to skip WF Scheme delete action
             log.debug("${iws.getName()} was deleted")        
+        } catch (WorkflowException we) {
+            log.error("Unable to delete ${iws.getDisplayName()}")
+            log.error("WorkflowException Error message: " + we.getMessage())
         }
-    } catch (WorkflowException we) {
-        log.error("WorkflowException Error message: " + we.getMessage())
     }
     log.debug("deleteInactiveWorkflowSchemes() - End")
 }
@@ -59,19 +61,20 @@ def deleteInactiveWorkflows() {
     def allWorkflows = workflowManager.getWorkflows()// Default(System)/Configurable JiraWorkflow objects Collection ; class java.util.ArrayList
     def activeWorkflows = workflowManager.getActiveWorkflows() // Configurable JiraWorkflow objects Collection ; class java.util.HashSet
     def inactiveWorkflows = allWorkflows.findAll{!(it in activeWorkflows)} // class java.util.ArrayList
-    try {
-        log.debug("${inactiveWorkflows.size()} inactive workflows may be deleted")
-        for (iw in inactiveWorkflows) {
+    
+    log.debug("${inactiveWorkflows.size()} inactive workflows may be deleted")
+    for (iw in inactiveWorkflows) {
+        try {
             //log.debug("is iw ${iw.getName()} - editable: ${iw.editable} & default: ${workflowManager.isSystemWorkflow(iw)}")
             if(iw.editable) {
                 //log.debug("${iw.getDisplayName()} will be deleted")
-                //workflowManager.deleteWorkflow(iw) //comment to skip WF delete action
+                workflowManager.deleteWorkflow(iw) //comment to skip WF delete action
                 log.debug("${iw.getDisplayName()} was deleted")                
             } else {log.warn("${iw.getDisplayName()} is default system workflow and may not be deleted")}
+        } catch (WorkflowException we) {
+            log.error("Unable to delete ${iw.getDisplayName()}")
+            log.error("Error message: " + we.getMessage())
         }
-    } catch (WorkflowException we) {
-        log.error("Unable to delete ${iw.getDisplayName()}")
-        log.error("Error message: " + we.getMessage())
     }
     log.debug("deleteInactiveWorkflows() - End")
 }
