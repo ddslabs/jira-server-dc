@@ -39,4 +39,4 @@ for(projectKey in projList) {
     }
 }
 
-log.debug("Log d'actions - fin")
+log.debug("Action log - End")
