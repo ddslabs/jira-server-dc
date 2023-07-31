@@ -2,7 +2,7 @@
 * Jira/JSM project(s) delete from list
 * Created by Dmitrij P @June 2023
 */
-// Les objets du base
+// Main libraries
 import com.atlassian.jira.bc.project.ProjectService
 import com.atlassian.jira.component.ComponentAccessor
 // Logging
@@ -13,29 +13,29 @@ def log = Logger.getLogger("Jira/JSM project(s) delete from list")
 log.setLevel(Level.DEBUG)
 log.debug("Actions log - Begin")
 
-// Utilisateur connecté - utilisé pour les validations et suppressions d'objets jira
+// Connected/Logedin user
 def user = ComponentAccessor.getJiraAuthenticationContext().getLoggedInUser()
-// Objets basic de traitement des operations de supprion projets
+// Main object for project operations
 def projectService = ComponentAccessor.getComponent(ProjectService.class)
 
 List<String> projList = ["EP","ZOIP"] // List with any project keys; could be filled by SQL query
 
-// Validation d'action et la suppression de(s) projet(s)
+// Delete action validator and project delete action
 for(projectKey in projList) {
     final ProjectService.DeleteProjectValidationResult result = projectService.validateDeleteProject(user, projectKey)
-    log.debug("Validation de la possibilité de suppression: " + result.getReturnedValue().toString())
+    log.debug(Possible delete valitator: " + result.getReturnedValue().toString())
                 
     if (result.isValid()) {
         try {            
             final ProjectService.DeleteProjectResult projectResult = projectService.deleteProject(user, result)
-            //log.debug("Rédultat de suppression dans l'objet: " + projectResult.getProperties().toPrettyString())
-            log.info("Projet <" + projectKey + "> a été supprimé")
+            //log.debug("Delete resolt in object: " + projectResult.getProperties().toPrettyString())
+            log.info("Project <" + projectKey + "> was deleted")
         } catch (Exception e) {
-            log.error("--- !!! Projet <" + projectKey + "> n'a pas été supprimé !!! ---")
-            log.error("Exception pour projet <"+ projectKey + ">\n"+ e)
+            log.error("--- !!! Project <" + projectKey + "> was not deleted !!! ---")
+            log.error("Exception for project <"+ projectKey + ">\n"+ e)
         }
     } else {
-        log.error("--- !!! Projet <" + projectKey + "> n'existe pas ou ne peut pas être supprimé !!! ---" )
+        log.error("--- !!! Project <" + projectKey + "> does not exist of may not be deleted !!! ---" )
     }
 }
 
