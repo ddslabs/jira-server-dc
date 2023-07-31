@@ -13,7 +13,7 @@ def log = Logger.getLogger("Jira/JSM project(s) delete from list")
 log.setLevel(Level.DEBUG)
 log.debug("Actions log - Begin")
 
-// Connected/Logedin user
+// Connected/Logged-in user
 def user = ComponentAccessor.getJiraAuthenticationContext().getLoggedInUser()
 // Main object for project operations
 def projectService = ComponentAccessor.getComponent(ProjectService.class)
