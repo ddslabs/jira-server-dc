@@ -16,6 +16,7 @@ log.debug("Inactive Notification Scheme Clean-up - Begin")
 
 def notificationShcemeManager = ComponentAccessor.getNotificationSchemeManager()
 
+def inactNotSchms = notificationShcemeManager.getUnassociatedSchemes()
 log.debug('<<< Inactive Notification Schemes delete action: >>>')
 inactNotSchms.forEach() { nSchmForDelete ->
     try {
