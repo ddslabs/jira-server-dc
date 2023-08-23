@@ -12,7 +12,7 @@ import org.apache.log4j.Logger
 
 def log = Logger.getLogger("Notification Scheme Bulk delete")
 log.setLevel(Level.DEBUG)
-log.debug("Inactice Notification Scheme Clean-up - Begin")
+log.debug("Inactive Notification Scheme Clean-up - Begin")
 
 def notificationShcemeManager = ComponentAccessor.getNotificationSchemeManager()
 
@@ -28,4 +28,4 @@ inactNotSchms.forEach() { nSchmForDelete ->
     }
 }
 
-log.debug("Inactice Notification Scheme Clean-up - End")
+log.debug("Inactive Notification Scheme Clean-up - End")
