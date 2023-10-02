@@ -16,7 +16,7 @@ def execStart = new Date()
 def traceProjectKey = 'OPTIMA' // Id of a project to trace the action
 String traceIssueType = 'Story' // Issue type of trace issue
 def desc = new StringBuilder() // Description
-String traceSummary = 'TEST - Issue Type Screen Schemes Clean-up'
+String traceSummary = 'TEST - Issue Type Screen Schemes Clean-up (sans suppression)'
 
 def log = Logger.getLogger("ITSS Clean-up")
 log.setLevel(Level.DEBUG)
@@ -37,28 +37,12 @@ for (itss in allITSS) {
         try {
             //itssManager.removeIssueTypeScreenScheme(itss) // comment to prevent inactive ITSS delete
             log.debug("ITSS ID: ${itss.getId()} & Name ${itss.getName()} - was REMOVED/DELETED")
-            desc.append("ITSS ID: ${itss.getId()} & Name ${itss.getName()} - was REMOVED/DELETED")
+            desc.append("ITSS ID: ${itss.getId()} & Name ${itss.getName()} - was REMOVED/DELETED \n")
         } catch (Exception e) {
             log.error(e.getMessage())
         }
     }
 }
-
-/* In progress - begin */
-def allFSS = fssManager.getFieldScreenSchemes()
-//log.debug(allFSS.toString())
-
-for (fss in allFSS) {
-    def fssi = fss.getFieldScreenSchemeItems()
-    def fssitr = fss.iterator()
-    log.debug("Items: ${fss.fieldScreenSchemeItems.findAll()}")
-    log.debug("FSS ID: ${fss.getId()} & Name: ${fss.getName()} & FieldScreenSchemeItems size: ${fssi.size()} ")
-    
-    
-}
-/* In progress - end */
-
-// inactive Screens & Screen Schemes are not treated by this scripts (for now)
 
 def execEnd = new Date()
 TimeDuration execTotal = TimeCategory.minus(execEnd, execStart)

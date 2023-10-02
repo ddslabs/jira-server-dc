@@ -4,6 +4,20 @@ Some from documentation of Script Runner.
 And some, found in the other sources.
 */
 
+/* execution time counter - begin */
+import groovy.time.TimeCategory 
+import groovy.time.TimeDuration
+
+def execStart = new Date()
+/*
+ main script execution
+*/
+def execEnd = new Date()
+ 
+TimeDuration execTotal = TimeCategory.minus(execEnd, execStart)
+println execTotal // or log.gebug("Total execution time $execTotal")
+/* - end - */
+
 /* Create issue: */
 Issues.create('ProjKey', 'Story') {
     setSummary('Permission scheme change for ' + ProjName)
