@@ -1,0 +1,1 @@
+// some ideas in: https://docs.atlassian.com/software/jira/docs/api/9.4.0/com/atlassian/jira/issue/IssueImpl.html
