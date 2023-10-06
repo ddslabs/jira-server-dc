@@ -65,7 +65,7 @@ fieldScreens.each { fs ->
     }
 }
 
-desc.append("*${count} inactive Notification scheme were deleted*\n")
+desc.append("*${count} inactive (Field) Screens were deleted*\n")
 def execEnd = new Date()
 TimeDuration execTotal = TimeCategory.minus(execEnd, execStart)
 desc.append("\n *Total execution time: < ${execTotal} >* \n")
