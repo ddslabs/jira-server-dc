@@ -47,6 +47,9 @@ ViewFieldScreens viewFieldScreens = new ViewFieldScreens(fieldScreenManager,
                                 jiraAuthenticationContext, 
                                 pageBuilderService) 
 
+// Project management
+def projectManager = ComponentAccessor.getProjectManager()
+
 def fieldScreens = fieldScreenManager.getFieldScreens()
 int count = 0
 fieldScreens.each { fs ->
