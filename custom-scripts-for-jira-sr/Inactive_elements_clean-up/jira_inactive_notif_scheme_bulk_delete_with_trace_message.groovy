@@ -45,7 +45,7 @@ inactNotSchms.forEach() { nSchmForDelete ->
         desc.append("Error: " + e + "\n")
     }
 }
-desc.append("*${count} inactive Notification scheme were deleted*\n")
+desc.append("*${count} inactive Notification schemes were deleted*\n")
 def execEnd = new Date()
 TimeDuration execTotal = TimeCategory.minus(execEnd, execStart)
 desc.append("\n *Total execution time: < ${execTotal} >* \n")
