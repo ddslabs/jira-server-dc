@@ -51,8 +51,8 @@ order by 4 desc
 Connection conn = ConnectionFactory.getConnection(helperName)
 Sql sql = new Sql(conn)
 
-// Use try and finally blocks for database connections because if something is wrong with the database connection
-// the connection can atleast be closed. finally block always gets executed.
+// Use "try" and "finally" blocks for database connections, if something will go wrong with the connectio to 
+// database connection, it will be able to closed. Block "finally" always gets executed.
 List projectList = [] // - filter list
 try {
 	//StringBuffer sb = new StringBuffer()

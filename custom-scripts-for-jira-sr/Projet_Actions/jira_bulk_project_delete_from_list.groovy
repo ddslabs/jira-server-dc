@@ -23,19 +23,19 @@ List<String> projList = ["EP","ZOIP"] // List with any project keys; could be fi
 // Delete action validator and project delete action
 for(projectKey in projList) {
     final ProjectService.DeleteProjectValidationResult result = projectService.validateDeleteProject(user, projectKey)
-    log.debug(Possible delete valitator: " + result.getReturnedValue().toString())
+    log.debug("Possible delete valitator: " + result.getReturnedValue().toString())
                 
     if (result.isValid()) {
         try {            
             final ProjectService.DeleteProjectResult projectResult = projectService.deleteProject(user, result)
-            //log.debug("Delete resolt in object: " + projectResult.getProperties().toPrettyString())
+            //log.debug("Delete result in object: " + projectResult.getProperties().toPrettyString())
             log.info("Project <" + projectKey + "> was deleted")
         } catch (Exception e) {
             log.error("--- !!! Project <" + projectKey + "> was not deleted !!! ---")
             log.error("Exception for project <"+ projectKey + ">\n"+ e)
         }
     } else {
-        log.error("--- !!! Project <" + projectKey + "> does not exist of may not be deleted !!! ---" )
+        log.error("--- !!! Project <" + projectKey + "> does not exist or/and may not be deleted !!! ---" )
     }
 }
 
