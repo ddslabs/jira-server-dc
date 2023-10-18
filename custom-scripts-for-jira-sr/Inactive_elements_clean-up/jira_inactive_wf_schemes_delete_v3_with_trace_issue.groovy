@@ -66,7 +66,7 @@ def deleteInactiveWorkflowSchemes() {
         }
     }
     log.debug("deleteInactiveWorkflowSchemes() - End")
-    desc.append("\n*${count} inactive Workflow Schemes were deleted* \n")
+    desc.append("\n*${count} - inactive Workflow Schemes were deleted* \n")
     desc.append("Delete of inactive Workflow Schemes - End \n\n")
 }
 
@@ -81,7 +81,7 @@ def deleteInactiveWorkflows() {
     def activeWorkflows = workflowManager.getActiveWorkflows() // Configurable JiraWorkflow objects Collection ; class java.util.HashSet
     def inactiveWorkflows = allWorkflows.findAll{!(it in activeWorkflows)} // class java.util.ArrayList
     
-    log.debug("${inactiveWorkflows.size()} inactive workflows may be deleted")
+    log.debug("${inactiveWorkflows.size()} - inactive workflows may be deleted")
     int count = 0
     for (iw in inactiveWorkflows) {
         try {
@@ -93,8 +93,8 @@ def deleteInactiveWorkflows() {
                 desc.append("* ${iw.getDisplayName()} - was deleted \n")
                 count++              
             } else {
-                log.warn("${iw.getDisplayName()} is default system workflow and may not be deleted")
-                desc.append("*ELSE CASE:* ${iw.getDisplayName()} is default system workflow and may not be deleted \n")
+                log.warn("${iw.getDisplayName()} - is default system workflow and may not be deleted")
+                desc.append("*ELSE CASE:* ${iw.getDisplayName()} - is default system workflow and may not be deleted \n")
             }
         } catch (WorkflowException we) {
             log.error("Unable to delete ${iw.getDisplayName()}")

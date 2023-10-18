@@ -17,7 +17,7 @@ def execStart = new Date()
 def traceProjectKey = 'OPTIMA' // Id of a project to trace the action
 String traceIssueType = 'Story' // Issue type of trace issue
 def desc = new StringBuilder() // Description
-String traceSummary = 'TEST - Inactive Permission Schemes Sulk Clean-up'
+String traceSummary = 'TEST - Inactive Permission Schemes Bulk Clean-up'
 
 def log = Logger.getLogger("Inactive Permission Schemes Bulk delete")
 log.setLevel(Level.DEBUG)
